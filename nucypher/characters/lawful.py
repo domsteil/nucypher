@@ -67,6 +67,7 @@ from nucypher.network.nodes import Teacher
 from nucypher.network.protocols import InterfaceInfo, parse_node_uri
 from nucypher.network.server import ProxyRESTServer, TLSHostingPower, make_rest_app
 from nucypher.blockchain.eth.decorators import validate_checksum_address
+from nucypher.network.status.status_page import UrsulaStatusPage
 
 
 class Alice(Character, PolicyAuthor):
@@ -793,6 +794,9 @@ class Ursula(Teacher, Character, Miner):
                     suspicious_activity_tracker=self.suspicious_activities_witnessed,
                     serving_domains=domains,
                 )
+                # attach status app to rest_app
+                UrsulaStatusPage(self, self.nickname, rest_app, '/status/')
+
 
                 #
                 # TLSHostingPower (Ephemeral Self-Ursula)
