@@ -4,21 +4,18 @@ from base64 import b64encode, b64decode
 
 import maya
 import pytest
+from click.testing import CliRunner
 
 import nucypher
-from nucypher.config.characters import AliceConfiguration
 from nucypher.characters.control.serializers import AliceControlJSONSerializer
-from nucypher.characters.lawful import Enrico
 from nucypher.crypto.kits import UmbralMessageKit
 from nucypher.crypto.powers import DecryptingPower
 from nucypher.policy.models import TreasureMap
-from nucypher.utilities.sandbox.policy import generate_random_label
 
-from click.testing import CliRunner
-from nucypher.cli.main import nucypher_cli
 click_runner = CliRunner()
 
 
+@pytest.mark.skip("920")
 def test_label_whose_b64_representation_is_invalid_utf8():
     # In our Discord, user robin#2324 (github username @robin-thomas) reported certain labels
     # break Bob's retrieve endpoint.
@@ -140,8 +137,9 @@ def test_alice_character_control_revoke(alice_control_test_client, federated_bob
     assert response_data['result']['failed_revocations'] == 0
 
 
-def test_alice_character_control_decrypt(mocker, alice_federated_test_config, alice_control_test_client, enacted_federated_policy, capsule_side_channel):
-    message_kit, data_source = capsule_side_channel
+def test_alice_character_control_decrypt(mocker, alice_federated_test_config, alice_control_test_client,
+                                         enacted_federated_policy, capsule_side_channel):
+    message_kit, data_source = capsule_side_channel()
 
     label = enacted_federated_policy.label.decode()
     policy_encrypting_key = bytes(enacted_federated_policy.public_key).hex()
